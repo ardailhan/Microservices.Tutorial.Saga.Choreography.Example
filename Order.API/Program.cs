@@ -46,9 +46,10 @@ app.MapPost("/create-order", async (CreateOrderVM model, OrderAPIDbContext conte
         }).ToList(),
         OrderStatus = Order.API.Enums.OrderStatus.Suspend,
         CreatedDate = DateTime.UtcNow,
-        TotalPrice = model.OrderItems.Sum(oi => oi.Price * oi.Count),
+        TotalPrice = model.OrderItems.Sum(oi => oi.Price * oi.Count)
     };
-    await context.AddAsync(order);
+
+    await context.Orders.AddAsync(order);
     await context.SaveChangesAsync();
 
     OrderCreatedEvent orderCreatedEvent = new()
@@ -60,7 +61,7 @@ app.MapPost("/create-order", async (CreateOrderVM model, OrderAPIDbContext conte
         {
             Count = oi.Count,
             Price = oi.Price,
-            ProductId = oi.ProductId
+            ProductId = oi.ProductId,
         }).ToList()
     };
     await publishEndpoint.Publish(orderCreatedEvent);

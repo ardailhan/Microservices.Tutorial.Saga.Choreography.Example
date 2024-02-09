@@ -11,6 +11,7 @@ namespace Order.API.Consumers
             var order = await _context.Orders.FindAsync(context.Message.OrderId);
             if (order == null)
                 throw new NullReferenceException();
+
             order.OrderStatus = Enums.OrderStatus.Completed;
             await _context.SaveChangesAsync();
         }
